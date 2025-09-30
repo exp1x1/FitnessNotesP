@@ -1,3 +1,5 @@
+import { provideEventPlugins } from "@taiga-ui/event-plugins";
+import { provideAnimations } from "@angular/platform-browser/animations";
 import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
@@ -22,7 +24,8 @@ import { environment } from '../environments/environment.development';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideBrowserGlobalErrorListeners(),
+        provideAnimations(),
+        provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes),
     provideServiceWorker('ngsw-worker.js', {
@@ -36,5 +39,6 @@ export const appConfig: ApplicationConfig = {
     UserTrackingService,
     provideFirestore(() => getFirestore()),
     provideFunctions(() => getFunctions()),
-  ],
+        provideEventPlugins()
+    ],
 };
