@@ -1,0 +1,56 @@
+<div class="container">
+  <div class="card register-card">
+    <div class="card__input">
+      <div>
+        <!-- <tui-textfield iconStart="@tui.user">
+          <label tuiLabel>Full Name</label>
+          <input tuiTextfield placeholder="john Doe" type="text" />
+        </tui-textfield> -->
+
+        <p-floatlabel variant="on">
+          <input pInputText id="fullname" autocomplete="off" />
+          <label for="fullanme">Full Name</label>
+        </p-floatlabel>
+      </div>
+      <div>
+        <!-- <tui-textfield iconStart="@tui.mail">
+          <label tuiLabel>Email</label>
+          <input tuiTextfield placeholder="you@example.com" type="email" />
+        </tui-textfield> -->
+      </div>
+      <div>
+        <!-- <tui-textfield iconStart="@tui.lock">
+          <label tuiLabel>Password</label>
+          <input tuiTextfield type="password" placeholder="••••••••••" />
+
+          <tui-icon tuiPassword />
+        </tui-textfield> -->
+      </div>
+
+      <div>
+        <!-- <tui-textfield iconStart="@tui.lock">
+          <label tuiLabel>Confirm Password</label>
+          <input tuiTextfield type="password" placeholder="••••••••••" />
+
+          <tui-icon tuiPassword />
+        </tui-textfield> -->
+      </div>
+    </div>
+    <div class="card__action">
+      <button appearance="primary" tuiButton type="button" size="l" (click)="onCreateAccount()">
+        Create Account
+      </button>
+    </div>
+    <div class="card__magiclink"></div>
+    <div class="card__footer">
+      <div class="divider">
+        <hr />
+      </div>
+      <div class="redirect">
+        <p class="tui-text_h1">
+          Already have an account <a (click)="onSigninRedirect()"> Sign in </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
