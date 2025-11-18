@@ -1,34 +1,79 @@
-<!-- <div class="container">
+<div class="container">
   <div class="card login-card">
-    <div class="card__input">
+    <form class="card__input" [formGroup]="loginForm">
+      <!-- email -->
       <div>
-        <label tuiLabel>Email</label>
-        <tui-textfield iconStart="@tui.mail">
-          <input tuiTextfield placeholder="you@example.com" type="email" />
-        </tui-textfield>
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            id="email"
+            type="email"
+            autocomplete="off"
+            pSize="large"
+            formControlName="email"
+            fluid
+          />
+          <label for="email">Email</label>
+        </p-floatlabel>
+
+        @if (isInvalid('email')) { @if (email?.errors?.['required']) {
+
+        <p-message severity="error" size="small" variant="simple">Email is required.</p-message>
+        } @if (email?.errors?.['email']) {
+        <p-message severity="error" size="small" variant="simple"
+          >Please enter a valid email.</p-message
+        >
+        } }
       </div>
+      <!-- password -->
       <div>
-        <label tuiLabel>Password</label>
-        <tui-textfield iconStart="@tui.lock">
-          <input tuiTextfield type="password" placeholder="••••••••••" />
+        <p-floatlabel variant="on">
+          <p-password
+            id="password"
+            formControlName="password"
+            type="password"
+            [toggleMask]="true"
+            [feedback]="false"
+            [showClear]="true"
+            fluid
+            autocomplete="off"
+          >
+          </p-password>
 
-          <tui-icon tuiPassword />
-        </tui-textfield>
+          <label for="password">Password </label>
+        </p-floatlabel>
+
+        @if (password.invalid && (password.dirty || password.touched)) {
+        <div class="error-messages">
+          @if (password.hasError('required')) {
+          <p-message severity="error" size="small" variant="simple"
+            >Password is required.</p-message
+          >
+          }
+        </div>
+        }
+        <div class="input-action"><a (click)="onForgotPassword()">Forgot Password?</a></div>
       </div>
+    </form>
 
-      <div><a (click)="onForgotPassword()">Forgot Password?</a></div>
-    </div>
     <div class="card__action">
-      <button appearance="accent" tuiButton type="button" size="m">Sign In</button>
+      <p-button label="Sign In" (onClick)="onSignIn()" size="large" fluid />
     </div>
-    <div class="card__magiclink"></div>
+
+    <div class="divider">
+      <hr />
+    </div>
+
+    <div class="card__magiclink">
+      <p-button severity="secondary" fluid [outlined]="true" (onClick)="onMagicLinkSignup('google')">
+        <img src="/icons/social-media/google-icon-color.svg" />
+      </p-button>
+    </div>
+
     <div class="card__footer">
-      <div class="divider">
-        <hr />
-      </div>
-      <div>
+      <div class="redirect">
         <p>Don't have an account? <a (click)="onSignupRedirect()"> Sign up </a></p>
       </div>
     </div>
   </div>
-</div> -->
+</div>

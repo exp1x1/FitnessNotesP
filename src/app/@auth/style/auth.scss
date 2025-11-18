@@ -23,6 +23,19 @@
       display: flex;
       flex-direction: column;
       gap: 0.4rem;
+
+      .input-action {
+        display: flex;
+        justify-content: flex-end;
+        font-size: 13px;
+        font-weight: 400;
+
+        a {
+          text-decoration: underline;
+          color: gray;
+          cursor: pointer;
+        }
+      }
     }
   }
 
@@ -33,25 +46,35 @@
   }
 
   &__footer {
-    .divider {
-      hr {
-        border: none;
-        border-top: 1px solid lightgray;
-        text-align: center;
-        height: 5px;
-        overflow: visible;
+    .redirect {
+      display: flex;
+      justify-content: center;
+      font-weight: 200;
+      font-size: 13px;
 
-        &::after {
-          content: 'or';
-          background: white;
-          position: relative;
-          top: -12px;
-          padding: 0 4px;
-        }
+      a {
+        text-decoration: underline;
+        font-weight: 400;
+        cursor: pointer;
       }
     }
+  }
+}
 
-    .redirect {
+.divider {
+  hr {
+    border: none;
+    border-top: 1px solid lightgray;
+    text-align: center;
+    height: 5px;
+    overflow: visible;
+
+    &::after {
+      content: 'or';
+      background: white;
+      position: relative;
+      top: -12px;
+      padding: 0 4px;
     }
   }
 }

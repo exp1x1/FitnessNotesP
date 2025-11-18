@@ -1,17 +1,83 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { MessageModule } from 'primeng/message';
+import { ToastModule } from 'primeng/toast';
+import { PasswordModule } from 'primeng/password';
+import { ButtonModule } from 'primeng/button';
+import { AuthFlow } from '../../service/auth-flow';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule],
+  imports: [
+    FormsModule,
+    InputTextModule,
+    FloatLabelModule,
+    ReactiveFormsModule,
+    MessageModule,
+    ToastModule,
+    PasswordModule,
+    ButtonModule,
+  ],
   templateUrl: './login.html',
   styleUrls: ['./login.scss', '../../style/auth.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Login {
-  onSignIn() {}
+  private authFlow = inject(AuthFlow);
+  private router = inject(Router);
+
+  formSubmitted = false;
+  loginForm = new FormGroup({
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.email],
+    }),
+    password: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+  });
+
+  get password() {
+    return this.loginForm.get('password')!;
+  }
+
+  get email() {
+    return this.loginForm.get('email');
+  }
+
+  isInvalid(controlName: string) {
+    const control = this.loginForm.get(controlName);
+    return control?.invalid && (control.touched || this.formSubmitted);
+  }
+
+  onSignIn() {
+    if (this.loginForm.valid) {
+      const { email, password } = this.loginForm.getRawValue();
+
+      console.log(this.loginForm.value, 'form value');
+
+      this.authFlow.userSigninWithEmailPassword(email, password).then((res) => {
+        console.log(res, 'res');
+      });
+    } else {
+      this.loginForm.markAllAsTouched();
+    }
+  }
+
+  onMagicLinkSignup(method: 'google') {
+    this.authFlow.signInWithGoogle();
+  }
 
   onForgotPassword() {}
 
-  onSignupRedirect() {}
+  onSignupRedirect() {
+    this.router.navigate(['/auth/register']);
+  }
 }

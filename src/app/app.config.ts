@@ -10,7 +10,7 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideServiceWorker } from '@angular/service-worker';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { getAuth, provideAuth } from '@angular/fire/auth';
+import { connectAuthEmulator, getAuth, provideAuth } from '@angular/fire/auth';
 import {
   getAnalytics,
   provideAnalytics,
@@ -35,7 +35,14 @@ export const appConfig: ApplicationConfig = {
       registrationStrategy: 'registerWhenStable:30000',
     }),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideAuth(() => getAuth()),
+    provideAuth(() => {
+      const auth = getAuth();
+      if (environment.firebase.useEmulators) {
+        // Conditional emulator use
+        connectAuthEmulator(auth, 'http://localhost:9099'); // Default Auth emulator port
+      }
+      return auth;
+    }),
     provideAnalytics(() => getAnalytics()),
     ScreenTrackingService,
     UserTrackingService,
