@@ -1,43 +1,35 @@
-import { AfterViewInit, Component, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
 import lottie, { AnimationItem } from 'lottie-web';
+import { AnimationOptions, LottieComponent } from 'ngx-lottie';
 
 @Component({
   selector: 'ui-dna-loader',
-  imports: [],
+  imports: [LottieComponent],
   templateUrl: './ui-dna-loader.html',
-  styleUrl: './ui-dna-loader.scss',
+  styleUrls: ['./ui-dna-loader.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class UiDnaLoader implements AfterViewInit {
-  @ViewChild('estimate', { static: true })
-  estimateRef!: ElementRef<HTMLDivElement>;
+export class UiDnaLoader implements OnDestroy {
+  options: AnimationOptions = {
+    path: 'https://labs.nearpod.com/bodymovin/demo/al_boardman/articulation/estimate.json',
+    loop: true,
+    autoplay: true,
+    renderer: 'svg',
+    rendererSettings: {
+      progressiveLoad: true,
+      preserveAspectRatio: 'xMidYMid meet',
+    },
+  };
 
   private anim?: AnimationItem;
 
-  ngAfterViewInit(): void {
-    // Just in case, destroy any previous animation on this container
-    if (this.anim) {
-      this.anim.destroy();
-      this.anim = undefined;
-    }
-
-    this.anim = lottie.loadAnimation({
-      container: this.estimateRef.nativeElement,
-      renderer: 'svg',
-      loop: true,
-      autoplay: true,
-      rendererSettings: {
-        progressiveLoad: true,
-        preserveAspectRatio: 'xMidYMid meet',
-      },
-      path: 'https://labs.nearpod.com/bodymovin/demo/al_boardman/articulation/estimate.json',
-    });
-
+  // Called by ngx-lottie when animation is created
+  animationCreated(animationItem: AnimationItem): void {
+    this.anim = animationItem;
     this.anim.setSubframe(false);
   }
 
   ngOnDestroy(): void {
-    // Important for HMR / route changes / component removal
     if (this.anim) {
       this.anim.destroy();
       this.anim = undefined;

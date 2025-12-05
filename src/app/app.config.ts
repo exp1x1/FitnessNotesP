@@ -23,6 +23,11 @@ import { environment } from '../environments/environment.development';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
+import { provideCacheableAnimationLoader, provideLottieOptions } from 'ngx-lottie';
+
+export function playerFactory() {
+  return import('lottie-web'); // <-- lazy-loads lottie-web
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -58,5 +63,7 @@ export const appConfig: ApplicationConfig = {
       },
       ripple: true,
     }),
+    provideLottieOptions({ player: () => playerFactory() }),
+    provideCacheableAnimationLoader(),
   ],
 };
