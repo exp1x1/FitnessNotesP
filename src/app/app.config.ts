@@ -1,5 +1,4 @@
-import { provideEventPlugins } from "@taiga-ui/event-plugins";
-import { provideAnimations } from "@angular/platform-browser/animations";
+import { provideAnimations } from '@angular/platform-browser/animations';
 import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
@@ -11,7 +10,7 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideServiceWorker } from '@angular/service-worker';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { getAuth, provideAuth } from '@angular/fire/auth';
+import { connectAuthEmulator, getAuth, provideAuth } from '@angular/fire/auth';
 import {
   getAnalytics,
   provideAnalytics,
@@ -21,11 +20,14 @@ import {
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getFunctions, provideFunctions } from '@angular/fire/functions';
 import { environment } from '../environments/environment.development';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeuix/themes/aura';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-        provideAnimations(),
-        provideBrowserGlobalErrorListeners(),
+    provideAnimations(),
+    provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes),
     provideServiceWorker('ngsw-worker.js', {
@@ -33,12 +35,28 @@ export const appConfig: ApplicationConfig = {
       registrationStrategy: 'registerWhenStable:30000',
     }),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideAuth(() => getAuth()),
+    provideAuth(() => {
+      const auth = getAuth();
+      if (environment.firebase.useEmulators) {
+        // Conditional emulator use
+        connectAuthEmulator(auth, 'http://localhost:9099'); // Default Auth emulator port
+      }
+      return auth;
+    }),
     provideAnalytics(() => getAnalytics()),
     ScreenTrackingService,
     UserTrackingService,
     provideFirestore(() => getFirestore()),
     provideFunctions(() => getFunctions()),
-        provideEventPlugins()
-    ],
+    provideAnimationsAsync(),
+    providePrimeNG({
+      theme: {
+        preset: Aura,
+        options: {
+          darkModeSelector: '.my-app-dark',
+        },
+      },
+      ripple: true,
+    }),
+  ],
 };

@@ -1,0 +1,140 @@
+<div class="container">
+  <div class="card register-card">
+    <form class="card__input" [formGroup]="registerForm">
+      <div>
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            id="fullname"
+            type="text"
+            autocomplete="off"
+            pSize="large"
+            formControlName="fullName"
+            fluid
+          />
+          <label for="fullName">Full Name</label>
+        </p-floatlabel>
+
+        @if (isInvalid('fullName')) {
+        <p-message severity="error" size="small" variant="simple">Full Name is required.</p-message>
+        }
+      </div>
+      <div>
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            id="email"
+            type="email"
+            autocomplete="off"
+            pSize="large"
+            formControlName="email"
+            fluid
+          />
+          <label for="email">Email</label>
+        </p-floatlabel>
+
+        @if (isInvalid('email')) { @if (registerForm.get('email')?.errors?.['required']) {
+
+        <p-message severity="error" size="small" variant="simple">Email is required.</p-message>
+        } @if (registerForm.get('email')?.errors?.['email']) {
+        <p-message severity="error" size="small" variant="simple"
+          >Please enter a valid email.</p-message
+        >
+        } }
+      </div>
+      <div>
+        <p-floatlabel variant="on">
+          <p-password
+            id="password"
+            formControlName="password"
+            type="password"
+            [toggleMask]="true"
+            [feedback]="true"
+            [promptLabel]="'Use at least 8 chars, upper & lower case, and a number.'"
+            [showClear]="true"
+            fluid
+            autocomplete="off"
+          >
+          </p-password>
+
+          <label for="password">Password </label>
+        </p-floatlabel>
+
+        @if (password.invalid && (password.dirty || password.touched)) {
+        <div class="error-messages">
+          @if (password.hasError('required')) {
+          <p-message severity="error" size="small" variant="simple"
+            >Password is required.</p-message
+          >
+          } @if (password.hasError('minlength')) {
+          <p-message severity="error" size="small" variant="simple"
+            >Password must be at least 8 characters.</p-message
+          >
+          } @if (password.hasError('pattern')) {
+          <p-message severity="error" size="small" variant="simple"
+            >Password must include uppercase, lowercase and a number.</p-message
+          >
+          }
+        </div>
+        }
+      </div>
+
+      <div>
+        <p-floatlabel variant="on">
+          <p-password
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            type="password"
+            [toggleMask]="true"
+            [feedback]="false"
+            [showClear]="true"
+            fluid
+            autocomplete="off"
+          >
+          </p-password>
+          <label for="confirmPassword">Confirm Password </label>
+        </p-floatlabel>
+
+        @if ((confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)) ||
+        registerForm.hasError('passwordsMismatch')) {
+
+        <div class="error-messages">
+          @if (confirmPassword.hasError('required')) {
+          <p-message severity="error" size="small" variant="simple"
+            >Confirm password is required.</p-message
+          >
+          } @if (registerForm.hasError('passwordsMismatch') && (confirmPassword.dirty ||
+          confirmPassword.touched)) {
+          <p-message severity="error" size="small" variant="simple"
+            >Passwords do not match.</p-message
+          >
+          }
+        </div>
+        }
+      </div>
+    </form>
+    <div class="card__action">
+      <p-button label="Create Account" (onClick)="onCreateAccount()" size="large" fluid />
+    </div>
+
+    <div class="divider">
+      <hr />
+    </div>
+
+    <div class="card__magiclink">
+      <p-button
+        severity="secondary"
+        [outlined]="true"
+        fluid
+        (onClick)="onMagicLinkSignup('google')"
+      >
+        <img src="/icons/social-media/google-icon-color.svg" />
+      </p-button>
+    </div>
+    <div class="card__footer">
+      <div class="redirect">
+        <p>Already have an account? <a (click)="onSigninRedirect()"> Sign in </a></p>
+      </div>
+    </div>
+  </div>
+</div>
