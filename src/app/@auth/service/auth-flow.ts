@@ -1,16 +1,20 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import {
   Auth,
   createUserWithEmailAndPassword,
   getAuth,
   getRedirectResult,
   GoogleAuthProvider,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
   signInWithRedirect,
   updateProfile,
+  User,
 } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { AuthErrorMap } from '../enum/auth-error-enum';
+import { MessageService } from 'primeng/api';
 
 @Injectable({
   providedIn: 'root',
@@ -20,11 +24,23 @@ export class AuthFlow {
   private fireAuth = inject(Auth);
   private getFireAuth = getAuth();
   private googleProvider = new GoogleAuthProvider();
+  private authErrorMessages = AuthErrorMap;
+
+  public $user = signal<User | null>(null);
+  public authReady = signal(false);
 
   constructor() {
-    this.fireAuth.onAuthStateChanged((res) => {
-      console.log('auth state changed', res);
-    });
+    this.fireAuth.onAuthStateChanged(
+      (res: User | null) => {
+        this.$user.set(res);
+        this.authReady.set(true);
+        console.log('auth state changed', this.$user());
+      },
+      (err) => {
+        this.authReady.set(true);
+        console.log('auth state change error', err);
+      }
+    );
   }
 
   async userSignupWithEmailPassword(email: string, password: string, fullName: string) {
@@ -32,6 +48,7 @@ export class AuthFlow {
       updateProfile(userCred.user, {
         displayName: fullName,
       });
+      this.handleRedirectToDashboard();
 
       return this.fireAuth.currentUser;
     });
@@ -39,7 +56,7 @@ export class AuthFlow {
 
   async userSigninWithEmailPassword(email: string, password: string) {
     return await signInWithEmailAndPassword(this.fireAuth, email, password).then((userCred) => {
-      console.log(userCred, 'user cred');
+      this.handleRedirectToDashboard();
       return userCred;
     });
   }
@@ -47,7 +64,7 @@ export class AuthFlow {
   async signInWithGoogle() {
     await signInWithPopup(this.fireAuth, this.googleProvider)
       .then((res) => {
-        console.log(res);
+        this.handleRedirectToDashboard();
       })
       .catch((err) => {
         console.log(err);
@@ -55,16 +72,22 @@ export class AuthFlow {
   }
 
   async signInWithGoogleRedirect() {
-    await signInWithRedirect(this.fireAuth, this.googleProvider)
+    return await signInWithRedirect(this.fireAuth, this.googleProvider)
       .then((res) => {})
       .catch((err) => {
         console.log(err);
       });
   }
 
+  // called in app component on init to check for redirect result
   async handleRedirectCallback() {
     await getRedirectResult(this.getFireAuth)
-      .then((result) => {})
+      .then((result) => {
+        console.log(result, 'redirect result');
+        if (result) {
+          this.handleRedirectToDashboard();
+        }
+      })
       .catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
@@ -76,5 +99,20 @@ export class AuthFlow {
       });
   }
 
-  handleUserLogin() {}
+  handleAuthError(messageService: MessageService, errorCode: string) {
+    messageService.clear();
+    messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail:
+        this.authErrorMessages[errorCode as keyof typeof this.authErrorMessages] ||
+        'An unknown error occurred',
+      sticky: true,
+      key: 'tc',
+    });
+  }
+
+  handleRedirectToDashboard() {
+    this.router.navigate(['']);
+  }
 }

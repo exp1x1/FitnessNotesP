@@ -65,7 +65,12 @@
     </div>
 
     <div class="card__magiclink">
-      <p-button severity="secondary" fluid [outlined]="true" (onClick)="onMagicLinkSignup('google')">
+      <p-button
+        severity="secondary"
+        fluid
+        [outlined]="true"
+        (onClick)="onMagicLinkSignup('google')"
+      >
         <img src="/icons/social-media/google-icon-color.svg" />
       </p-button>
     </div>
@@ -77,3 +82,5 @@
     </div>
   </div>
 </div>
+
+<p-toast position="top-center" key="tc" />

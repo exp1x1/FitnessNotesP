@@ -2,16 +2,17 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { $t, updatePreset, updateSurfacePalette } from '@primeuix/themes';
 import { AuthFlow } from './@auth/service/auth-flow';
+import { UiDnaLoader } from './shared/component/ui/ui-dna-loader/ui-dna-loader';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, UiDnaLoader],
 })
 export class App implements OnInit {
   protected readonly title = signal('fitnote');
-  private authFlow = inject(AuthFlow);
+  authFlow = inject(AuthFlow);
 
   ngOnInit(): void {
     this.test();

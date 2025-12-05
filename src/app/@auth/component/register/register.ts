@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import {
@@ -14,6 +14,7 @@ import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { AuthFlow } from '../../service/auth-flow';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-register',
@@ -25,6 +26,7 @@ import { Router } from '@angular/router';
     PasswordModule,
     ButtonModule,
   ],
+  providers: [MessageService],
   templateUrl: './register.html',
   styleUrls: ['./register.scss', '../../style/auth.scss'],
 })
@@ -35,6 +37,14 @@ export class Register {
   formSubmitted = false;
   // Example pattern: must contain at least one uppercase, one lowercase, one digit
   private passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+
+  constructor(private messageService: MessageService) {
+    effect(() => {
+      if (this.authFlow.$user()) {
+        this.router.navigate(['/dashboard']);
+      }
+    });
+  }
 
   registerForm = new FormGroup(
     {
@@ -67,9 +77,15 @@ export class Register {
     if (this.registerForm.valid) {
       const { fullName, email, password } = this.registerForm.getRawValue();
 
-      this.authFlow.userSignupWithEmailPassword(email, password, fullName).then((res) => {
-        console.log(res);
-      });
+      this.authFlow
+        .userSignupWithEmailPassword(email, password, fullName)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+          this.authFlow.handleAuthError(this.messageService, err.code);
+        });
       console.log('Form value', this.registerForm.value);
     } else {
       // mark all as touched to show errors

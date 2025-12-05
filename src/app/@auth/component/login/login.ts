@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import {
@@ -14,6 +14,8 @@ import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { AuthFlow } from '../../service/auth-flow';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { FirebaseError } from '@angular/fire/app';
 
 @Component({
   selector: 'app-login',
@@ -27,6 +29,7 @@ import { Router } from '@angular/router';
     PasswordModule,
     ButtonModule,
   ],
+  providers: [MessageService],
   templateUrl: './login.html',
   styleUrls: ['./login.scss', '../../style/auth.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,6 +37,14 @@ import { Router } from '@angular/router';
 export class Login {
   private authFlow = inject(AuthFlow);
   private router = inject(Router);
+
+  constructor(private messageService: MessageService) {
+    effect(() => {
+      if (this.authFlow.$user()) {
+        this.router.navigate(['/dashboard']);
+      }
+    });
+  }
 
   formSubmitted = false;
   loginForm = new FormGroup({
@@ -63,16 +74,22 @@ export class Login {
 
       console.log(this.loginForm.value, 'form value');
 
-      this.authFlow.userSigninWithEmailPassword(email, password).then((res) => {
-        console.log(res, 'res');
-      });
+      this.authFlow
+        .userSigninWithEmailPassword(email, password)
+        .then((res) => {
+          console.log(res, 'res');
+        })
+        .catch((err: FirebaseError) => {
+          console.log(err, 'code');
+          this.authFlow.handleAuthError(this.messageService, err.code);
+        });
     } else {
       this.loginForm.markAllAsTouched();
     }
   }
 
   onMagicLinkSignup(method: 'google') {
-    this.authFlow.signInWithGoogle();
+    this.authFlow.signInWithGoogleRedirect();
   }
 
   onForgotPassword() {}

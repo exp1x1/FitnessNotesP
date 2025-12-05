@@ -1,1 +1,8 @@
-<router-outlet> </router-outlet>
+@if (authFlow.authReady()) {
+
+<ng-container>
+  <router-outlet> </router-outlet>
+</ng-container>
+} @else {
+<ui-dna-loader></ui-dna-loader>
+}
