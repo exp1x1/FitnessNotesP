@@ -1,4 +1,3 @@
-/* Keep body basics */
 body {
   margin: 0;
   height: 100%;
@@ -6,34 +5,32 @@ body {
   overflow-y: auto;
 }
 
-/* If html DOES NOT have .my-app-dark => force white background */
 html:not(.my-app-dark),
 html:not(.my-app-dark) body {
-  background-color: #444;
+  background-color: #fff; //
 }
 
-/* If html HAS .my-app-dark, we don't touch background here,
-   so your dark theme global styles stay in control. */
-
-/* Loader layout */
-
-.grid {
+.dna-grid {
   display: grid;
   width: 100%;
-  height: 100vh; /* fill viewport */
+  height: 100vh; // fill viewport
   grid-template-columns: 100%;
   grid-template-rows: 100%;
   gap: 0.5%;
   background-color: #fff;
 }
 
-/* If you also want the grid background to respect dark mode: */
-html.my-app-dark .grid {
-  background-color: inherit; /* or transparent; depends on your theme */
+/* Respect dark mode for the grid background if needed */
+html.my-app-dark .dna-grid {
+  background-color: inherit;
 }
 
-.box {
+.dna-box {
   background-color: #fff;
   color: #fff;
   padding: 4px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

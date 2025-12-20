@@ -1,3 +1,8 @@
-<div class="grid">
-  <div class="box" #estimate></div>
+<div class="dna-grid">
+  <div class="dna-box">
+    <ng-lottie
+      [options]="options"
+      (animationCreated)="animationCreated($event)">
+    </ng-lottie>
+  </div>
 </div>
