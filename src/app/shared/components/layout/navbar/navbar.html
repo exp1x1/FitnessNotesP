@@ -1,0 +1,32 @@
+<nav class="navbar">
+  <div class="logo">
+    <img src="/images/main-logo-512.png" alt="Logo" />
+  </div>
+  <div class="navbar__actions">
+    <ng-content />
+    <button
+      pButton
+      type="button"
+      [outlined]="true"
+      icon="pi pi-bars"
+      (click)="showDrawer()"
+    ></button>
+  </div>
+</nav>
+
+<p-drawer [(visible)]="visible" [closable]="true" position="right" [fullScreen]="true">
+  <ng-template pTemplate="header">
+    <h3>Menu</h3>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <ul class="menu-list">
+      <li><a href="/dashboard">Dashboard</a></li>
+      <li><a href="/workouts">Workouts</a></li>
+      <li><a href="/exercises">Exercises</a></li>
+      <li><a href="/settings">Settings</a></li>
+    </ul>
+  </ng-template>
+  <!-- <ng-template pTemplate="footer">
+        <button pButton type="button"></button>
+      </ng-template> -->
+</p-drawer>

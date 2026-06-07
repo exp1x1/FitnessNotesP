@@ -1,0 +1,40 @@
+.card {
+  &__title {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+
+  &__week_carousel {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 0.5rem;
+
+    .day_block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+
+      .weekday {
+        text-transform: uppercase;
+      }
+      .date {
+      }
+      .tag {
+      }
+    }
+  }
+}
+
+.p-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.card-container {
+  margin: 1rem;
+}

@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
 import { authRoutes } from './@auth/auth.routes';
-import { mainRoutes } from './@main/main.routes';
+import { dashboardRoutes } from './dashboard/dashboard.routes';
 
 export const routes: Routes = [
-  ...mainRoutes,
+  ...dashboardRoutes,
   ...authRoutes,
   {
     path: '**',

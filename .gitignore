@@ -3,6 +3,8 @@
 # env
 # src/environments/
 
+# continue.dev
+.continue
 
 # Compiled output
 /dist
